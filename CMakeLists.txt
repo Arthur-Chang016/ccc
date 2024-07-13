@@ -22,3 +22,6 @@ set_target_properties(ccc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR
 # Add subdirectories for components (optional, depending on your structure)
 add_subdirectory(lib)
 add_subdirectory(test)
+
+# Link the utils library to the ccc executable
+target_link_libraries(ccc PRIVATE Utils)

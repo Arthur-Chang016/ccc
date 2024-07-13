@@ -9,7 +9,7 @@
             "type": "lldb",
             "request": "launch",
             "program": "${workspaceFolder}/build/bin/ccc",
-            "args": [],
+            "args": ["${workspaceFolder}/tmp/input.c"],
             "cwd": "${workspaceFolder}",
             "preLaunchTask": "CMake: build",
         }

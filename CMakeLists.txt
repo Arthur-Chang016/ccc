@@ -24,4 +24,4 @@ add_subdirectory(lib)
 add_subdirectory(test)
 
 # Link the utils library to the ccc executable
-target_link_libraries(ccc PRIVATE Utils)
+target_link_libraries(ccc PRIVATE Utils Lex)

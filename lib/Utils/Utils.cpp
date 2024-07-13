@@ -1,5 +1,8 @@
 #include "Utils/Utils.h"
+
 #include <fstream>
+
+namespace ccc {
 
 std::string inputFileToString(const char *filename) {
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -14,3 +17,5 @@ std::string inputFileToString(const char *filename) {
     }
     throw std::runtime_error("empty input file :" + std::string(filename));
 }
+
+}  // namespace ccc

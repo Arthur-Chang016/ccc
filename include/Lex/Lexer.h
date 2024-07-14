@@ -11,6 +11,8 @@ class Lexer {
 
     // TODO change to array of tokens
 
+    void buildTokenStream();
+
    public:
     Lexer(std::string s);
 };

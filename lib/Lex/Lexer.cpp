@@ -1,8 +1,13 @@
 
 #include "Lex/Lexer.h"
 
+#include "Lex/Token.h"
+
 using namespace ccc;
 
 Lexer::Lexer(std::string s) : source(std::move(s)) {
-    // TODO build source
+    buildTokenStream();
+}
+
+void Lexer::buildTokenStream() {
 }

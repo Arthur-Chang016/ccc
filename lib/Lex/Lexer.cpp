@@ -1,10 +1,9 @@
 
 #include "Lex/Lexer.h"
-#include "Lex/Token.h"
 
 #include <cassert>
 
-
+#include "Lex/Token.h"
 
 namespace ccc {
 
@@ -68,20 +67,32 @@ LocSV consumeTilShortCommentEnds(LocSV input) {
  * take the incoming decimal leteral
  */
 LocSV consumeDeciLit(LocSV input, int64_t &retInt) {
-    assert(std::isdigit(input.at(0)) && "input should start with digit");
+    // assert(std::isdigit(input.at(0)) && "input should start with digit");
     if (input.empty() || std::isdigit(input.at(0)) == false) return input;
     char num = input.at(0) - '0';
     return consumeDeciLit(input.consume(1), retInt = (retInt * 10) + num);
+}
+
+char getHexNum(const char c) {
+    if (std::isdigit(c)) return c - '0';
+    if ('a' <= c && c <= 'f') return c - 'a' + 10;
+    if ('A' <= c && c <= 'F') return c - 'A' + 10;
+    assert(false && "shouldn't achieve here");
+}
+
+bool isHexNum(const char c) {
+    return std::isdigit(c) || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F');
 }
 
 /**
  * take the incoming hex leteral
  */
 LocSV consumeHexLit(LocSV input, int64_t &retInt) {
-    assert((input.starts_with("0x") || input.starts_with("0X")) && "input should start with 0x");
-    if (input.empty() || std::isdigit(input.at(0)) == false) return input;
-    char num = input.at(0) - '0';
-    return consumeDeciLit(input.consume(1), retInt = (retInt * 10) + num);
+    // assert((input.starts_with("0x") || input.starts_with("0X")) && "input should start with 0x");
+    if (input.empty() || isHexNum(input.at(0)) == false) return input;
+    // char num = input.at(0) - '0';
+    char num = getHexNum(input.at(0));
+    return consumeHexLit(input.consume(1), retInt = (retInt * 16) + num);
 }
 
 /**
@@ -284,6 +295,8 @@ bool isReservedSymbol(const std::string &symbol) {
     // added myself
     else if (symbol == ("import")) {
         return true;
+    } else if (symbol == ("bool")) {
+        return true;
     }
     return false;
 }
@@ -336,9 +349,12 @@ void Lexer::buildTokenStream(LocSV input) {
         } else {
             // TODO build ID token
         }
+        buildTokenStream(input);
+    } else if (std::isspace(cur)) {
+        buildTokenStream(input.consume(1));
+    } else {
+        // TODO throw unsupported input
     }
-
-    // TODO throw unsupported input
 }
 
 }  // namespace ccc

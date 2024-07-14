@@ -9,9 +9,9 @@
 #include "Lex/Token.h"
 
 namespace ccc {
-    
+
 class LocSV;
-    
+
 enum streamMode {
     LONG_COMMENT,
     SHORT_COMMENT,

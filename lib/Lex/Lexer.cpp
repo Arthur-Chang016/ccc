@@ -192,54 +192,6 @@ bool LocSV::startsWithSign() {
         return true;
     } else if (this->starts_with("?")) {
         return true;
-    } else if (this->starts_with("||")) {
-        return true;
-    } else if (this->starts_with("&&")) {
-        return true;
-    } else if (this->starts_with("|")) {
-        return true;
-    } else if (this->starts_with("^")) {
-        return true;
-    } else if (this->starts_with("&")) {
-        return true;
-    } else if (this->starts_with("==")) {
-        return true;
-    } else if (this->starts_with("!=")) {
-        return true;
-    } else if (this->starts_with("<")) {
-        return true;
-    } else if (this->starts_with(">")) {
-        return true;
-    } else if (this->starts_with("<=")) {
-        return true;
-    } else if (this->starts_with(">=")) {
-        return true;
-    } else if (this->starts_with("<<")) {
-        return true;
-    } else if (this->starts_with(">>")) {
-        return true;
-    } else if (this->starts_with("+")) {
-        return true;
-    } else if (this->starts_with("-")) {
-        return true;
-    } else if (this->starts_with("/")) {
-        return true;
-    } else if (this->starts_with("%")) {
-        return true;
-    } else if (this->starts_with("++")) {
-        return true;
-    } else if (this->starts_with("--")) {
-        return true;
-    } else if (this->starts_with(".")) {
-        return true;
-    } else if (this->starts_with("->")) {
-        return true;
-    } else if (this->starts_with("=")) {
-        return true;
-    } else if (this->starts_with("~")) {
-        return true;
-    } else if (this->starts_with("!")) {
-        return true;
     } else if (this->starts_with("*=")) {
         return true;
     } else if (this->starts_with("/=")) {
@@ -259,6 +211,54 @@ bool LocSV::startsWithSign() {
     } else if (this->starts_with("^=")) {
         return true;
     } else if (this->starts_with("|=")) {
+        return true;
+    } else if (this->starts_with("||")) {
+        return true;
+    } else if (this->starts_with("&&")) {
+        return true;
+    } else if (this->starts_with("|")) {
+        return true;
+    } else if (this->starts_with("^")) {
+        return true;
+    } else if (this->starts_with("&")) {
+        return true;
+    } else if (this->starts_with("==")) {
+        return true;
+    } else if (this->starts_with("!=")) {
+        return true;
+    } else if (this->starts_with("<=")) {
+        return true;
+    } else if (this->starts_with(">=")) {
+        return true;
+    } else if (this->starts_with("<<")) {
+        return true;
+    } else if (this->starts_with(">>")) {
+        return true;
+    } else if (this->starts_with("++")) {
+        return true;
+    } else if (this->starts_with("--")) {
+        return true;
+    } else if (this->starts_with(".")) {
+        return true;
+    } else if (this->starts_with("->")) {
+        return true;
+    } else if (this->starts_with("<")) {
+        return true;
+    } else if (this->starts_with(">")) {
+        return true;
+    } else if (this->starts_with("+")) {
+        return true;
+    } else if (this->starts_with("-")) {
+        return true;
+    } else if (this->starts_with("/")) {
+        return true;
+    } else if (this->starts_with("%")) {
+        return true;
+    } else if (this->starts_with("=")) {
+        return true;
+    } else if (this->starts_with("~")) {
+        return true;
+    } else if (this->starts_with("!")) {
         return true;
     }
     return false;

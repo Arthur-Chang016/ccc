@@ -2,8 +2,8 @@
 #ifndef LEX_TOKEN_H
 #define LEX_TOKEN_H
 
-#include <string>;
-#include <vector>;
+#include <string>
+#include <vector>
 
 namespace ccc {
 
@@ -211,7 +211,7 @@ const std::vector<const char *> OpTokenStrings{
     "RSH_ASSIGN",
     "AND_ASSIGN",
     "XOR_ASSIGN",
-    "DIV_ASSIGN"};
+    "OR_ASSIGN"};
 
 class OpToken : public Token {
     enum Type {
@@ -248,7 +248,7 @@ class OpToken : public Token {
         RSH_ASSIGN,
         AND_ASSIGN,
         XOR_ASSIGN,
-        DIV_ASSIGN
+        OR_ASSIGN
     } type;
 
    public:

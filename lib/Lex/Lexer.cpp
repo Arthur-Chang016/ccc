@@ -95,6 +95,58 @@ LocSV consumeHexLit(LocSV input, int64_t &retInt) {
     return consumeHexLit(input.consume(1), retInt = (retInt * 16) + num);
 }
 
+LocSV consumeSingleChar(LocSV input, int64_t &retInt) {
+    if (input.at(0) == '\\') {
+        if (input.size() <= 1) {
+            // TODO throw, need after reverse slash
+        }
+        switch (input.at(1)) {
+            case 'n':
+                retInt = '\n';
+                break;
+            case 't':
+                retInt = '\t';
+                break;
+            case '\'':
+                retInt = '\'';
+                break;
+            case '\"':
+                retInt = '\"';
+                break;
+            case '\\':
+                retInt = '\\';
+                break;
+            default:
+                if (std::isdigit(input.at(1))) {
+                    int64_t intLit = 0;
+                    input = consumeDeciLit(input, intLit);
+                    // TODO build char with given ascii num (truncated)
+                } else {
+                    // TODO throw unsupported reverse slash command
+                }
+        }
+        return input.consume(2);
+    } else {
+        retInt = input.at(0);
+        return input.consume(1);
+    }
+}
+
+/**
+ * take the incoming char leteral
+ * already consume the first '
+ */
+LocSV consumeCharLit(LocSV input, int64_t &retInt) {
+    if (input.empty()) {
+        // TODO throw, no following closed char
+    }
+    input = consumeSingleChar(input, retInt);
+    if (input.starts_with('\'') == false) {
+        // TODO throw, incompleted char lit
+    }
+    return input.consume(1);  // consume the second '
+}
+
 /**
  * In string literal mode, keep building 'retStrLit' until "
  * supported special case: \ with n, t, ', ", \, and decimal literals
@@ -108,40 +160,11 @@ LocSV consumeTileStrLitEnds(LocSV input, std::string &retStrLit) {
     }
 
     if (input.at(0) == '\"') return input.consume(1);
-    if (input.at(0) == '\\') {
-        if (input.size() <= 1) {
-            // TODO throw, need after reverse slash
-        }
-        switch (input.at(1)) {
-            case 'n':
-                retStrLit += '\n';
-                break;
-            case 't':
-                retStrLit += '\t';
-                break;
-            case '\'':
-                retStrLit += '\'';
-                break;
-            case '\"':
-                retStrLit += '\"';
-                break;
-            case '\\':
-                retStrLit += '\\';
-                break;
-            default:
-                if (std::isdigit(input.at(1))) {
-                    int64_t intLit = 0;
-                    input = consumeDeciLit(input, intLit);
-                    // TODO build char with given ascii num (truncated)
-                } else {
-                    // TODO throw unsupported reverse slash command
-                }
-        }
-        return consumeTileStrLitEnds(input.consume(2), retStrLit);
-    } else {
-        retStrLit += input.at(0);
-        return consumeTileStrLitEnds(input.consume(1), retStrLit);
-    }
+    // normal char
+    int64_t charLit = 0;
+    input = consumeSingleChar(input, charLit);
+    retStrLit += char(charLit);
+    return consumeTileStrLitEnds(input, retStrLit);
 }
 
 // std::vector<std::string> signs{"{", "}", ";", ":", "*", "(", ")"};
@@ -241,8 +264,6 @@ bool LocSV::startsWithSign() {
     return false;
 }
 
-// assert((input.empty() || std::isalpha(input.at(0))) && "Should start with alphabet");
-
 // can be alphabet, _, digit
 bool canBeSymbol(const char c) {
     return std::isalpha(c) || c == '_' || std::isdigit(c);
@@ -329,12 +350,16 @@ void Lexer::buildTokenStream(LocSV input) {
         input = consumeTileStrLitEnds(input.consume(1), strLit);
         // TODO build str lit token
         buildTokenStream(input);
-    } else if (std::isdigit(cur)) {  // normal
-        int64_t num = 0;
+    } else if (cur == '\'') {
+        int64_t charLit = 0;
+        input = consumeCharLit(input.consume(1), charLit);
+        // TODO build char lit token
+    } else if (std::isdigit(cur)) {  // int literal
+        int64_t intLit = 0;
         if (input.starts_with("0x") || input.starts_with("0X")) {  // hex
-            input = consumeHexLit(input, num);
-        } else {  // decimal
-            input = consumeDeciLit(input, num);
+            input = consumeHexLit(input.consume(2), intLit);       // skip 0x
+        } else {                                                   // decimal
+            input = consumeDeciLit(input, intLit);
         }
         // TODO build int lit token
         buildTokenStream(input);

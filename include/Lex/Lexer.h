@@ -10,7 +10,19 @@
 
 namespace ccc {
 
-class LocSV;
+/**
+ * location information with line number and offset
+ */
+class Loc {
+    int line, offset;
+
+   public:
+    Loc(int l, int o);
+
+    std::string toString() const;
+};
+
+class LocSV;  // TODO, move it here
 
 enum streamMode {
     LONG_COMMENT,
@@ -26,6 +38,8 @@ class Lexer {
     // TODO change to array of tokens
 
     void buildTokenStream(LocSV input);
+
+    void reportAndHalt(const Loc loc, const std::string &msg);
 
    public:
     Lexer(std::string s);

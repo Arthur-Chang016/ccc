@@ -1,11 +1,15 @@
 
+
 #include "Lex/Lexer.h"
 
 #include <cassert>
+#include <iostream>
 
 #include "Lex/Token.h"
 
 namespace ccc {
+
+// TODO change LocSV to Lexer, they can be merged
 
 /**
  * Inherit from std::string_view, with loc information
@@ -36,9 +40,20 @@ class LocSV : public std::string_view {
     bool startsWithSymbol();
 };
 
+Loc::Loc(int l, int o) : line(l), offset(o) {}
+
+std::string Loc::toString() const {
+    return "[" + std::to_string(line) + ", " + std::to_string(offset) + "]";
+}
+
 Lexer::Lexer(std::string s) {
     LocSV source(1, 1, s);
     buildTokenStream(source);
+}
+
+void Lexer::reportAndHalt(const Loc loc, const std::string &msg) {
+    std::cerr << "Lex Error" << loc.toString() << " : " << msg << std::endl;
+    exit(1);
 }
 
 /**

@@ -14,52 +14,48 @@ namespace ccc {
  * location information with line number and offset
  */
 class Loc {
+    friend class Lexer;
+
+   private:
     int line, offset;
 
-   public:
     Loc(int l, int o);
 
+    Loc incremented();
+
+    Loc newLined();
+
+   public:
     std::string toString() const;
 };
 
-// class LocSV;  // TODO, move it here
-
-enum streamMode {
-    LONG_COMMENT,
-    SHORT_COMMENT,
-    STRING_LIT,
-    NORMAL
-};
-
 class Lexer : std::string_view {
-    /**
-     * Assume the start point of the input can form a new token
-     */
-    Lexer buildTokenStream();
-
-    void reportAndHalt(const Loc loc, const std::string &msg);
+    using super = std::string_view;
 
    public:
     Lexer(std::string_view s);
 
-    using super = std::string_view;
+    /**
+     * Build the lexer stream
+     * Assume the start point of the input can form a new token
+     */
+    Lexer buildTokenStream();
+
+    /**
+     * Halt the program and print error message along with loc info
+     */
+    void reportAndHalt(const Loc loc, const std::string &msg);
 
    private:
-    int line, offset;
+    Loc loc;
 
-   public:
-    Lexer(int l, int o, std::string_view sv)
-        : line(l), offset(o), super(sv) {}
+    Lexer(Loc l, std::string_view sv);
+    /**
+     * Shrink the head of the lexer
+     * Update loc info
+     */
+    Lexer consume(size_t n);
 
-    Lexer consume(size_t n) {
-        if (n == 0 || this->empty()) return *this;
-        if (this->at(0) == '\n')
-            return Lexer(line + 1, 1, this->substr(1)).consume(n - 1);
-        else
-            return Lexer(line, offset + 1, this->substr(1)).consume(n - 1);
-    }
-
-   private:
     /**
      * Keep deleting prefix until long comment ends or EOF
      */
@@ -108,6 +104,8 @@ class Lexer : std::string_view {
     bool startsWithSign();
 
     bool startsWithSymbol();
+
+    Loc getLoc();
 };
 
 }  // namespace ccc

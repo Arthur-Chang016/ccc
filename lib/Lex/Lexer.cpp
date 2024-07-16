@@ -11,11 +11,33 @@ namespace ccc {
 
 Loc::Loc(int l, int o) : line(l), offset(o) {}
 
+Loc Loc::incremented() {
+    return Loc(line, offset + 1);
+}
+
+Loc Loc::newLined() {
+    return Loc(line + 1, 1);
+}
+
 std::string Loc::toString() const {
     return "[" + std::to_string(line) + ", " + std::to_string(offset) + "]";
 }
 
-Lexer::Lexer(std::string_view s) : super(s) {}
+Lexer::Lexer(std::string_view s) : super(s), loc(1, 1) {}
+
+Lexer::Lexer(Loc l, std::string_view sv) : loc(l), super(sv) {}
+
+Loc Lexer::getLoc() {
+    return this->loc;
+}
+
+Lexer Lexer::consume(size_t n) {
+    if (n <= 0 || this->empty()) return *this;
+    if (this->at(0) == '\n')
+        return Lexer(this->loc.newLined(), this->substr(1)).consume(n - 1);
+    else
+        return Lexer(this->loc.incremented(), this->substr(1)).consume(n - 1);
+}
 
 void Lexer::reportAndHalt(const Loc loc, const std::string &msg) {
     std::cerr << "Lex Error" << loc.toString() << " : " << msg << std::endl;

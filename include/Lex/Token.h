@@ -7,6 +7,10 @@
 
 namespace ccc {
 
+class Token;
+
+using TokenPtr = std::unique_ptr<Token>;
+
 class Token {
    public:
     virtual ~Token() = default;

@@ -39,7 +39,7 @@ class Lexer : std::string_view {
      * Build the lexer stream
      * Assume the start point of the input can form a new token
      */
-    Lexer buildTokenStream();
+    Lexer buildTokenStream(std::vector<TokenPtr> &retTokens);
 
     /**
      * Halt the program and print error message along with loc info

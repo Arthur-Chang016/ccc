@@ -322,29 +322,29 @@ bool Lexer::startWithHexLit() {
     return this->starts_with("0x") || this->starts_with("0X");
 }
 
-Lexer Lexer::buildTokenStream() {
+Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
     if (this->empty()) return *this;
     char cur = this->at(0);
 
     if (this->starts_with("/*")) {  // long comment starts
-        return this->consumeLongComment().buildTokenStream();
+        return this->consumeLongComment().buildTokenStream(retTokens);
     } else if (this->starts_with("//")) {  // short comment starts
-        return this->consumeShortComment().buildTokenStream();
+        return this->consumeShortComment().buildTokenStream(retTokens);
     } else if (cur == '\"') {  // string lit start
         std::string strLit;
         Lexer retLex = this->consumeStrLit(strLit);
         // TODO build str lit token
-        return retLex.buildTokenStream();
+        return retLex.buildTokenStream(retTokens);
     } else if (cur == '\'') {
         int64_t charLit = 0;
         Lexer retLex = this->consumeCharLit(charLit);
         // TODO build char lit token
-        return retLex.buildTokenStream();
+        return retLex.buildTokenStream(retTokens);
     } else if (std::isdigit(cur)) {  // int literal
         int64_t intLit = 0;
         Lexer retLex = this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit);
         // TODO build int lit token
-        return retLex.buildTokenStream();
+        return retLex.buildTokenStream(retTokens);
     } else if (this->startsWithSign()) {
         // TODO consume sign
         // TODO build sign token
@@ -357,9 +357,9 @@ Lexer Lexer::buildTokenStream() {
         } else {
             // TODO build ID token
         }
-        return retLex.buildTokenStream();
+        return retLex.buildTokenStream(retTokens);
     } else if (std::isspace(cur)) {
-        return this->consume(1).buildTokenStream();
+        return this->consume(1).buildTokenStream(retTokens);
     } else {
         // TODO throw unsupported input
     }

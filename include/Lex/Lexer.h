@@ -97,6 +97,8 @@ class Lexer : std::string_view {
      */
     Lexer consumeSymbol(std::string &symbol);
 
+    Lexer consumeSign(TokenPtr &retToken);
+
     Lexer consumeStrLitInner(std::string &retStrLit);
 
     bool startWithHexLit();

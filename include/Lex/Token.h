@@ -13,7 +13,7 @@ using TokenPtr = std::unique_ptr<Token>;
 
 class Token {
    public:
-    virtual ~Token() = default;
+    virtual ~Token() = 0;
     virtual std::string toString() const;
 };
 
@@ -140,14 +140,19 @@ const std::vector<const char *> TerminalStrings{
     "SEMICOL"};
 
 class TerminalToken : public Token {
+   public:
     enum Type {
         SEMICOL
-    } type;
+    };
 
-   public:
+    TerminalToken(Type t) : type(t) {}
+
     std::string toString() const {
         return TerminalStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> BlockTokenStrings{
@@ -155,7 +160,6 @@ const std::vector<const char *> BlockTokenStrings{
     "R_BRACE",
     "COMMA",
     "COLON",
-    "STAR",
     "L_PAREN",
     "R_PAREN",
     "L_BRACKET",
@@ -163,22 +167,26 @@ const std::vector<const char *> BlockTokenStrings{
 };
 
 class BlockToken : public Token {
+   public:
     enum Type {
         L_BRACE,
         R_BRACE,
         COMMA,
         COLON,
-        STAR,
         L_PAREN,
         R_PAREN,
         L_BRACKET,
         R_BRACKET,
-    } type;
+    };
 
-   public:
+    BlockToken(Type t) : type(t) {}
+
     std::string toString() const {
         return BlockTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> OpTokenStrings{
@@ -198,6 +206,7 @@ const std::vector<const char *> OpTokenStrings{
     "RIGHT_SH",
     "ADD",
     "SUB",
+    "STAR",
     "DIV",
     "MOD",
     "INC",
@@ -218,6 +227,7 @@ const std::vector<const char *> OpTokenStrings{
     "OR_ASSIGN"};
 
 class OpToken : public Token {
+   public:
     enum Type {
         QUESTION,
         LOGICAL_OR,
@@ -235,6 +245,7 @@ class OpToken : public Token {
         RIGHT_SH,
         ADD,
         SUB,
+        STAR,
         DIV,
         MOD,
         INC,
@@ -253,12 +264,16 @@ class OpToken : public Token {
         AND_ASSIGN,
         XOR_ASSIGN,
         OR_ASSIGN
-    } type;
+    };
 
-   public:
+    OpToken(Type t) : type(t) {}
+
     std::string toString() const {
         return OpTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 }  // namespace ccc

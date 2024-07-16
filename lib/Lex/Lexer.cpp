@@ -253,6 +253,147 @@ bool Lexer::startsWithSign() {
     return false;
 }
 
+Lexer Lexer::consumeSign(TokenPtr &retToken) {
+    if (this->starts_with("{")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACKET);
+        return this->consume(1);
+    } else if (this->starts_with("}")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACKET);
+        return this->consume(1);
+    } else if (this->starts_with(";")) {
+        retToken = std::make_unique<TerminalToken>(TerminalToken::SEMICOL);
+        return this->consume(1);
+    } else if (this->starts_with(",")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::COMMA);
+        return this->consume(1);
+    } else if (this->starts_with(":")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::COLON);
+        return this->consume(1);
+    } else if (this->starts_with("*")) {
+        retToken = std::make_unique<OpToken>(OpToken::STAR);
+        return this->consume(1);
+    } else if (this->starts_with("(")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::L_PAREN);
+        return this->consume(1);
+    } else if (this->starts_with(")")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::R_PAREN);
+        return this->consume(1);
+    } else if (this->starts_with("[")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACE);
+        return this->consume(1);
+    } else if (this->starts_with("]")) {
+        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACE);
+        return this->consume(1);
+    } else if (this->starts_with("?")) {
+        retToken = std::make_unique<OpToken>(OpToken::QUESTION);
+        return this->consume(1);
+    } else if (this->starts_with("*=")) {
+        retToken = std::make_unique<OpToken>(OpToken::MUL_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("/=")) {
+        retToken = std::make_unique<OpToken>(OpToken::DIV_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("%=")) {
+        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("+=")) {
+        retToken = std::make_unique<OpToken>(OpToken::ADD_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("-=")) {
+        retToken = std::make_unique<OpToken>(OpToken::SUB_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("<<=")) {
+        retToken = std::make_unique<OpToken>(OpToken::LSH_ASSIGN);
+        return this->consume(3);
+    } else if (this->starts_with(">>=")) {
+        retToken = std::make_unique<OpToken>(OpToken::RSH_ASSIGN);
+        return this->consume(3);
+    } else if (this->starts_with("&=")) {
+        retToken = std::make_unique<OpToken>(OpToken::AND_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("^=")) {
+        retToken = std::make_unique<OpToken>(OpToken::XOR_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("|=")) {
+        retToken = std::make_unique<OpToken>(OpToken::OR_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("||")) {
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_OR);
+        return this->consume(2);
+    } else if (this->starts_with("&&")) {
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_AND);
+        return this->consume(2);
+    } else if (this->starts_with("|")) {
+        retToken = std::make_unique<OpToken>(OpToken::BIT_OR);
+        return this->consume(1);
+    } else if (this->starts_with("^")) {
+        retToken = std::make_unique<OpToken>(OpToken::BIT_XOR);
+        return this->consume(1);
+    } else if (this->starts_with("&")) {
+        retToken = std::make_unique<OpToken>(OpToken::BIT_AND);
+        return this->consume(1);
+    } else if (this->starts_with("==")) {
+        retToken = std::make_unique<OpToken>(OpToken::EQ);
+        return this->consume(2);
+    } else if (this->starts_with("!=")) {
+        retToken = std::make_unique<OpToken>(OpToken::NOT_EQ);
+        return this->consume(2);
+    } else if (this->starts_with("<=")) {
+        retToken = std::make_unique<OpToken>(OpToken::LESS_EQ);
+        return this->consume(2);
+    } else if (this->starts_with(">=")) {
+        retToken = std::make_unique<OpToken>(OpToken::GREATER_EQ);
+        return this->consume(2);
+    } else if (this->starts_with("<<")) {
+        retToken = std::make_unique<OpToken>(OpToken::LEFT_SH);
+        return this->consume(2);
+    } else if (this->starts_with(">>")) {
+        retToken = std::make_unique<OpToken>(OpToken::RIGHT_SH);
+        return this->consume(2);
+    } else if (this->starts_with("++")) {
+        retToken = std::make_unique<OpToken>(OpToken::INC);
+        return this->consume(2);
+    } else if (this->starts_with("--")) {
+        retToken = std::make_unique<OpToken>(OpToken::DEC);
+        return this->consume(2);
+    } else if (this->starts_with(".")) {
+        retToken = std::make_unique<OpToken>(OpToken::DOT);
+        return this->consume(1);
+    } else if (this->starts_with("->")) {
+        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN);
+        return this->consume(2);
+    } else if (this->starts_with("<")) {
+        retToken = std::make_unique<OpToken>(OpToken::LESS);
+        return this->consume(1);
+    } else if (this->starts_with(">")) {
+        retToken = std::make_unique<OpToken>(OpToken::GREATER);
+        return this->consume(1);
+    } else if (this->starts_with("+")) {
+        retToken = std::make_unique<OpToken>(OpToken::ADD);
+        return this->consume(1);
+    } else if (this->starts_with("-")) {
+        retToken = std::make_unique<OpToken>(OpToken::SUB);
+        return this->consume(1);
+    } else if (this->starts_with("/")) {
+        retToken = std::make_unique<OpToken>(OpToken::DIV);
+        return this->consume(1);
+    } else if (this->starts_with("%")) {
+        retToken = std::make_unique<OpToken>(OpToken::MOD);
+        return this->consume(1);
+    } else if (this->starts_with("=")) {
+        retToken = std::make_unique<OpToken>(OpToken::ASSIGN);
+        return this->consume(1);
+    } else if (this->starts_with("~")) {
+        retToken = std::make_unique<OpToken>(OpToken::BIT_NOT);
+        return this->consume(1);
+    } else if (this->starts_with("!")) {
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_NOT);
+        return this->consume(1);
+    }
+    assert(false && "Shouldn't achieve here. Expect a sign");
+    exit(1);
+}
+
 // can be alphabet, _, digit
 bool canBeSymbol(const char c) {
     return std::isalpha(c) || c == '_' || std::isdigit(c);
@@ -346,9 +487,10 @@ Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
         // TODO build int lit token
         return retLex.buildTokenStream(retTokens);
     } else if (this->startsWithSign()) {
-        // TODO consume sign
+        TokenPtr token = nullptr;
+        Lexer retLex = this->consumeSign(token);
         // TODO build sign token
-
+        return retLex;
     } else if (std::isalpha(cur) || cur == '_') {  // symbol
         std::string symbol;
         Lexer retLex = this->consumeSymbol(symbol);

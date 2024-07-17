@@ -39,7 +39,7 @@ Lexer Lexer::consume(size_t n) {
         return Lexer(this->loc.incremented(), this->substr(1)).consume(n - 1);
 }
 
-void Lexer::reportAndHalt(const Loc loc, const std::string &msg) {
+void Lexer::lexError(const std::string &msg) {
     std::cerr << "Lex Error" << loc.toString() << " : " << msg << std::endl;
     exit(1);
 }
@@ -91,7 +91,7 @@ Lexer Lexer::consumeHexLitInner(int64_t &retInt) {
 Lexer Lexer::consumeSingleChar(int64_t &retInt) {
     if (this->at(0) == '\\') {
         if (this->size() <= 1) {
-            // TODO throw, need after reverse slash
+            this->lexError("Incomplete char literal");
         }
         switch (this->at(1)) {
             case 'n':
@@ -111,13 +111,9 @@ Lexer Lexer::consumeSingleChar(int64_t &retInt) {
                 break;
             default:
                 if (std::isdigit(this->at(1))) {
-                    int64_t intLit = 0;
-                    Lexer retPoint = consumeDeciLit(intLit);
-
-                    // TODO build char with given ascii num (truncated)
-                    return retPoint;
+                    return consumeDeciLit(retInt = 0);
                 } else {
-                    // TODO throw unsupported reverse slash command
+                    this->lexError(std::string("Unsupported reverse slash command: /") + this->at(1));
                 }
         }
         return this->consume(2);
@@ -131,7 +127,7 @@ Lexer Lexer::consumeCharLit(int64_t &retInt) {
     assert(this->starts_with('\'') && "Should start with '");
     Lexer retLex = this->consume(1).consumeSingleChar(retInt = 0);
     if (this->starts_with('\'') == false) {
-        // TODO throw, incompleted char lit
+        this->lexError("Incomplete char literal");
     }
     return retLex.consume(1);  // consume the second '
 }
@@ -142,12 +138,10 @@ Lexer Lexer::consumeStrLit(std::string &retStrLit) {
 }
 
 Lexer Lexer::consumeStrLitInner(std::string &retStrLit) {
-    if (this->empty()) {
-        // TODO throw lexer error, should close the string
-    }
-    if (this->at(0) == '\n') {
-        // TODO throw, string should end at the same line
-    }
+    if (this->empty())
+        this->lexError("Unclosed string literal");
+    if (this->at(0) == '\n')
+        this->lexError("String should end at the same line");
     if (this->at(0) == '\"') return this->consume(1);
     // normal char
     int64_t charLit = 0;
@@ -500,7 +494,7 @@ Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
     } else if (std::isspace(this->at(0))) {
         retLex = this->consume(1).buildTokenStream(retTokens);
     } else {
-        // TODO throw unsupported input
+        this->lexError("Unsupported input");
     }
     assert(retLex != *this && "retLex should be updated");
     return retLex;

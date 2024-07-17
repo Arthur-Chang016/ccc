@@ -2,6 +2,7 @@
 #ifndef LEX_TOKEN_H
 #define LEX_TOKEN_H
 
+#include <memory>
 #include <string>
 #include <vector>
 

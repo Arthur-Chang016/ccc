@@ -8,6 +8,8 @@ namespace ccc {
 
 std::string inputFileToString(const char *filename);
 
-}
+void printStackTrace();
+
+}  // namespace ccc
 
 #endif  // UTILS_UTILS_H

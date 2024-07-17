@@ -44,7 +44,7 @@ class Lexer : std::string_view {
     /**
      * Halt the program and print error message along with loc info
      */
-    void reportAndHalt(const Loc loc, const std::string &msg);
+    void lexError(const std::string &msg);
 
    private:
     Loc loc;

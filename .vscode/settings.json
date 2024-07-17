@@ -45,6 +45,21 @@
         "__split_buffer": "cpp",
         "array": "cpp",
         "vector": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "stacktrace": "cpp",
+        "__hash_table": "cpp",
+        "__node_handle": "cpp",
+        "charconv": "cpp",
+        "codecvt": "cpp",
+        "condition_variable": "cpp",
+        "deque": "cpp",
+        "numbers": "cpp",
+        "optional": "cpp",
+        "print": "cpp",
+        "queue": "cpp",
+        "semaphore": "cpp",
+        "span": "cpp",
+        "stack": "cpp",
+        "unordered_map": "cpp"
     }
 }

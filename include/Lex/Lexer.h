@@ -105,7 +105,7 @@ class Lexer : std::string_view {
 
     bool startsWithSign();
 
-    bool startsWithSymbol();
+    bool startWithSymbolHead();
 
     Loc getLoc();
 };

@@ -399,57 +399,58 @@ bool canBeSymbol(const char c) {
     return std::isalpha(c) || c == '_' || std::isdigit(c);
 }
 
-bool isReservedSymbol(const std::string &symbol) {
+TokenPtr symbolToToken(const std::string &symbol) {
     if (symbol == ("void")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::VOID);
     } else if (symbol == ("char")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::CHAR);
     } else if (symbol == ("short")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::SHORT);
     } else if (symbol == ("int")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::INT);
     } else if (symbol == ("long")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::LONG);
     } else if (symbol == ("struct")) {
-        return true;
+        return std::make_unique<AggregateToken>(AggregateToken::STRUCT);
     } else if (symbol == ("union")) {
-        return true;
-    } else if (symbol == ("sizeof")) {
-        return true;
+        return std::make_unique<AggregateToken>(AggregateToken::UNION);
     } else if (symbol == ("enum")) {
-        return true;
+        return std::make_unique<AggregateToken>(AggregateToken::ENUM);
+    } else if (symbol == ("sizeof")) {
+        return std::make_unique<SizeofToken>(SizeofToken::SIZEOF);
     } else if (symbol == ("case")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::CASE);
     } else if (symbol == ("default")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::DEFAULT);
     } else if (symbol == ("if")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::IF);
     } else if (symbol == ("else")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::ELSE);
     } else if (symbol == ("switch")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::SWITCH);
     } else if (symbol == ("while")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::WHILE);
     } else if (symbol == ("do")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::DO);
     } else if (symbol == ("for")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::FOR);
     } else if (symbol == ("goto")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::GOTO);
     } else if (symbol == ("continue")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::CONTINUE);
     } else if (symbol == ("break")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::BREAK);
     } else if (symbol == ("return")) {
-        return true;
+        return std::make_unique<CtrlToken>(CtrlToken::RETURN);
     }
     // added myself
     else if (symbol == ("import")) {
-        return true;
+        return std::make_unique<AggregateToken>(AggregateToken::IMPORT);
     } else if (symbol == ("bool")) {
-        return true;
+        return std::make_unique<TypeToken>(TypeToken::BOOL);
     }
-    return false;
+    // ID token
+    return std::make_unique<IDToken>(symbol);
 }
 
 Lexer Lexer::consumeSymbol(std::string &symbol) {
@@ -459,52 +460,50 @@ Lexer Lexer::consumeSymbol(std::string &symbol) {
 
 // TODO check all substr
 
+bool Lexer::startWithSymbolHead() {
+    if (this->empty()) return false;
+    return std::isalpha(this->at(0)) || this->at(0) == '_';
+}
+
 bool Lexer::startWithHexLit() {
     return this->starts_with("0x") || this->starts_with("0X");
 }
 
 Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
     if (this->empty()) return *this;
-    char cur = this->at(0);
+    Lexer retLex = *this;
 
-    if (this->starts_with("/*")) {  // long comment starts
-        return this->consumeLongComment().buildTokenStream(retTokens);
-    } else if (this->starts_with("//")) {  // short comment starts
-        return this->consumeShortComment().buildTokenStream(retTokens);
-    } else if (cur == '\"') {  // string lit start
+    if (this->starts_with("/*")) {  // long comment
+        retLex = this->consumeLongComment().buildTokenStream(retTokens);
+    } else if (this->starts_with("//")) {  // short comment
+        retLex = this->consumeShortComment().buildTokenStream(retTokens);
+    } else if (this->starts_with('\"')) {  // string literal
         std::string strLit;
-        Lexer retLex = this->consumeStrLit(strLit);
-        // TODO build str lit token
-        return retLex.buildTokenStream(retTokens);
-    } else if (cur == '\'') {
+        retLex = this->consumeStrLit(strLit).buildTokenStream(retTokens);
+        retTokens.emplace_back(std::make_unique<StrLitToken>(strLit));
+    } else if (this->starts_with('\'')) {  // char literal
         int64_t charLit = 0;
-        Lexer retLex = this->consumeCharLit(charLit);
-        // TODO build char lit token
-        return retLex.buildTokenStream(retTokens);
-    } else if (std::isdigit(cur)) {  // int literal
+        retLex = this->consumeCharLit(charLit).buildTokenStream(retTokens);
+        retTokens.emplace_back(std::make_unique<IntLitToken>(charLit));
+    } else if (std::isdigit(this->at(0))) {  // int literal
         int64_t intLit = 0;
-        Lexer retLex = this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit);
-        // TODO build int lit token
-        return retLex.buildTokenStream(retTokens);
+        retLex = (this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit)).buildTokenStream(retTokens);
+        retTokens.emplace_back(std::make_unique<IntLitToken>(intLit));
     } else if (this->startsWithSign()) {
         TokenPtr token = nullptr;
-        Lexer retLex = this->consumeSign(token);
-        // TODO build sign token
-        return retLex;
-    } else if (std::isalpha(cur) || cur == '_') {  // symbol
+        retLex = this->consumeSign(token).buildTokenStream(retTokens);
+        retTokens.emplace_back(std::move(token));
+    } else if (this->startWithSymbolHead()) {  // symbol
         std::string symbol;
-        Lexer retLex = this->consumeSymbol(symbol);
-        if (isReservedSymbol(symbol)) {
-            // TODO build keyword token
-        } else {
-            // TODO build ID token
-        }
-        return retLex.buildTokenStream(retTokens);
-    } else if (std::isspace(cur)) {
-        return this->consume(1).buildTokenStream(retTokens);
+        retLex = this->consumeSymbol(symbol).buildTokenStream(retTokens);
+        retTokens.emplace_back(symbolToToken(symbol));
+    } else if (std::isspace(this->at(0))) {
+        retLex = this->consume(1).buildTokenStream(retTokens);
     } else {
         // TODO throw unsupported input
     }
+    assert(retLex != *this && "retLex should be updated");
+    return retLex;
 }
 
 }  // namespace ccc

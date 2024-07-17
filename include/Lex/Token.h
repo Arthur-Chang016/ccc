@@ -21,15 +21,22 @@ class IDToken : public Token {
     std::string name;
 
    public:
+    IDToken(std::string str) : name(std::move(str)) {}
+
     std::string toString() const {
         return name;
     }
 };
 
+/**
+ * include int literal and char literal
+ */
 class IntLitToken : public Token {
     int64_t value;
 
    public:
+    IntLitToken(int64_t num) : value(num) {}
+
     std::string toString() const {
         return std::to_string(value);
     }
@@ -39,6 +46,8 @@ class StrLitToken : public Token {
     std::string content;
 
    public:
+    StrLitToken(std::string str) : content(std::move(str)) {}
+
     std::string toString() const {
         return content;
     }
@@ -53,6 +62,7 @@ const std::vector<const char *> TypeTokenStrings{
     "LONG"};
 
 class TypeToken : public Token {
+   public:
     enum Type {
         VOID,
         BOOL,
@@ -60,44 +70,60 @@ class TypeToken : public Token {
         SHORT,
         INT,
         LONG
-    } type;
+    };
 
-   public:
+    TypeToken(Type t) : type(t) {}
+
     std::string toString() const {
         return TypeTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> SizeofTokenStrings{
     "SIZEOF"};
 
 class SizeofToken : public Token {
+   public:
     enum Type {
         SIZEOF
-    } type;
+    };
 
-   public:
+    SizeofToken(Type t) : type(t) {}
+
     std::string toString() const {
         return SizeofTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> AggregateTokenStrings{
     "STRUCT",
     "UNION",
-    "ENUM"};
+    "ENUM",
+    "IMPORT"};
 
 class AggregateToken : public Token {
+   public:
     enum Type {
         STRUCT,
         UNION,
-        ENUM
-    } type;
+        ENUM,
+        IMPORT
+    };
 
-   public:
+    AggregateToken(Type t) : type(t) {}
+
     std::string toString() const {
         return AggregateTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> CtrlTokenStrings{
@@ -115,6 +141,7 @@ const std::vector<const char *> CtrlTokenStrings{
     "RETURN"};
 
 class CtrlToken : public Token {
+   public:
     enum Type {
         CASE,
         DEFAULT,
@@ -128,12 +155,16 @@ class CtrlToken : public Token {
         CONTINUE,
         BREAK,
         RETURN
-    } type;
+    };
 
-   public:
+    CtrlToken(Type t) : type(t) {}
+
     std::string toString() const {
         return CtrlTokenStrings.at(type);
     }
+
+   private:
+    Type type;
 };
 
 const std::vector<const char *> TerminalStrings{

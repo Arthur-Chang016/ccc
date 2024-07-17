@@ -29,7 +29,7 @@ class Loc {
     std::string toString() const;
 };
 
-class Lexer : std::string_view {
+class Lexer : public std::string_view {
     using super = std::string_view;
 
    public:

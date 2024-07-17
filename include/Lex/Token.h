@@ -25,7 +25,7 @@ class IDToken : public Token {
     IDToken(std::string str) : name(std::move(str)) {}
 
     std::string toString() const {
-        return name;
+        return "ID : " + name;
     }
 };
 
@@ -39,7 +39,7 @@ class IntLitToken : public Token {
     IntLitToken(int64_t num) : value(num) {}
 
     std::string toString() const {
-        return std::to_string(value);
+        return "INTLIT : " + std::to_string(value);
     }
 };
 
@@ -50,7 +50,7 @@ class StrLitToken : public Token {
     StrLitToken(std::string str) : content(std::move(str)) {}
 
     std::string toString() const {
-        return content;
+        return "STRLIT : " + content;
     }
 };
 

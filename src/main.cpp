@@ -2,6 +2,7 @@
 #include <string>
 
 #include "Lex/Lexer.h"
+#include "Lex/Token.h"
 #include "Utils/Utils.h"
 
 int main(int args, char **argv) {
@@ -9,7 +10,13 @@ int main(int args, char **argv) {
 
     std::string inputText = ccc::inputFileToString(argv[1]);
 
-    ccc::Lexer lexer(inputText);
+    std::vector<ccc::TokenPtr> tokens = ccc::buildTokens(inputText);
+
+    for (auto &token : tokens) {
+        std::cout << token->toString() << std::endl;
+    }
+
+    // ccc::Lexer lexer(inputText);
 
     int a = 0;
 

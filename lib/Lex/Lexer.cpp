@@ -7,6 +7,8 @@
 
 #include "Lex/Token.h"
 
+// TODO stack trace for assert
+
 namespace ccc {
 
 Loc::Loc(int l, int o) : line(l), offset(o) {}
@@ -111,13 +113,13 @@ Lexer Lexer::consumeSingleChar(int64_t &retInt) {
                 break;
             default:
                 if (std::isdigit(this->at(1))) {
-                    return consumeDeciLit(retInt = 0);
+                    return this->consume(1).consumeDeciLit(retInt = 0);
                 } else {
                     this->lexError(std::string("Unsupported reverse slash command: /") + this->at(1));
                 }
         }
         return this->consume(2);
-    } else {
+    } else {  // normal char
         retInt = this->at(0);
         return this->consume(1);
     }
@@ -126,14 +128,14 @@ Lexer Lexer::consumeSingleChar(int64_t &retInt) {
 Lexer Lexer::consumeCharLit(int64_t &retInt) {
     assert(this->starts_with('\'') && "Should start with '");
     Lexer retLex = this->consume(1).consumeSingleChar(retInt = 0);
-    if (this->starts_with('\'') == false) {
-        this->lexError("Incomplete char literal");
+    if (retLex.starts_with('\'') == false) {
+        this->lexError("Incomplete char literal. Should have only 1 char");
     }
     return retLex.consume(1);  // consume the second '
 }
 
 Lexer Lexer::consumeStrLit(std::string &retStrLit) {
-    assert(retStrLit.starts_with("\"") && "Should start with \"");
+    assert(this->starts_with("\"") && "Should start with \"");
     return this->consume(1).consumeStrLitInner(retStrLit = {});
 }
 
@@ -141,7 +143,7 @@ Lexer Lexer::consumeStrLitInner(std::string &retStrLit) {
     if (this->empty())
         this->lexError("Unclosed string literal");
     if (this->at(0) == '\n')
-        this->lexError("String should end at the same line");
+        this->lexError("String literal should end at the same line");
     if (this->at(0) == '\"') return this->consume(1);
     // normal char
     int64_t charLit = 0;

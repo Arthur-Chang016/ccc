@@ -2,8 +2,12 @@
 
 #include <execinfo.h>
 
+#include <cassert>
 #include <fstream>
 #include <iostream>
+
+#include "Lex/Lexer.h"
+#include "Lex/Token.h"
 
 namespace ccc {
 
@@ -32,6 +36,15 @@ void printStackTrace() {
         std::cerr << symbols[i] << "\n";
     }
     free(symbols);
+}
+
+std::vector<TokenPtr> buildTokens(std::string_view input) {
+    Lexer lexer(input);
+    std::vector<TokenPtr> tokens;
+    lexer = lexer.buildTokenStream(tokens);
+    assert(lexer.empty() && "Lexer should be empty after lexing");
+    std::reverse(tokens.begin(), tokens.end());
+    return tokens;
 }
 
 }  // namespace ccc

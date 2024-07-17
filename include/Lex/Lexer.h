@@ -6,12 +6,10 @@
 #include <string_view>
 #include <vector>
 
-// #include "Lex/Token.h"
-
 namespace ccc {
 
+// prevent circular dependency
 class Token;
-
 using TokenPtr = std::unique_ptr<Token>;
 
 /**

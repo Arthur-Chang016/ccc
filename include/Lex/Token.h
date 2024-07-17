@@ -11,7 +11,6 @@
 namespace ccc {
 
 class Token;
-
 using TokenPtr = std::unique_ptr<Token>;
 
 class Token {
@@ -19,6 +18,8 @@ class Token {
 
    public:
     Token(const Loc &l);
+
+    virtual Loc getLoc() const;
 
     virtual ~Token() = default;
     virtual std::string toString() const;
@@ -28,11 +29,9 @@ class IDToken : public Token {
     std::string name;
 
    public:
-    IDToken(std::string str, Loc l) : name(std::move(str)), Token(l) {}
+    IDToken(std::string str, Loc l);
 
-    std::string toString() const {
-        return "ID : " + name;
-    }
+    std::string toString() const;
 };
 
 /**
@@ -42,31 +41,19 @@ class IntLitToken : public Token {
     int64_t value;
 
    public:
-    IntLitToken(int64_t num, Loc l) : value(num), Token(l) {}
+    IntLitToken(int64_t num, Loc l);
 
-    std::string toString() const {
-        return "INTLIT : " + std::to_string(value);
-    }
+    std::string toString() const;
 };
 
 class StrLitToken : public Token {
     std::string content;
 
    public:
-    StrLitToken(std::string str, Loc l) : content(std::move(str)), Token(l) {}
+    StrLitToken(std::string str, Loc l);
 
-    std::string toString() const {
-        return "STRLIT : " + content;
-    }
+    std::string toString() const;
 };
-
-const std::vector<const char *> TypeTokenStrings{
-    "VOID",
-    "BOOL",
-    "CHAR",
-    "SHORT",
-    "INT",
-    "LONG"};
 
 class TypeToken : public Token {
    public:
@@ -79,18 +66,13 @@ class TypeToken : public Token {
         LONG
     };
 
-    TypeToken(Type t, Loc l) : type(t), Token(l) {}
+    TypeToken(Type t, Loc l);
 
-    std::string toString() const {
-        return TypeTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
 };
-
-const std::vector<const char *> SizeofTokenStrings{
-    "SIZEOF"};
 
 class SizeofToken : public Token {
    public:
@@ -98,21 +80,13 @@ class SizeofToken : public Token {
         SIZEOF
     };
 
-    SizeofToken(Type t, Loc l) : type(t), Token(l) {}
+    SizeofToken(Type t, Loc l);
 
-    std::string toString() const {
-        return SizeofTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
 };
-
-const std::vector<const char *> AggregateTokenStrings{
-    "STRUCT",
-    "UNION",
-    "ENUM",
-    "IMPORT"};
 
 class AggregateToken : public Token {
    public:
@@ -123,29 +97,13 @@ class AggregateToken : public Token {
         IMPORT
     };
 
-    AggregateToken(Type t, Loc l) : type(t), Token(l) {}
+    AggregateToken(Type t, Loc l);
 
-    std::string toString() const {
-        return AggregateTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
 };
-
-const std::vector<const char *> CtrlTokenStrings{
-    "CASE",
-    "DEFAULT",
-    "IF",
-    "ELSE",
-    "SWITCH",
-    "WHILE",
-    "DO",
-    "FOR",
-    "GOTO",
-    "CONTINUE",
-    "BREAK",
-    "RETURN"};
 
 class CtrlToken : public Token {
    public:
@@ -164,18 +122,13 @@ class CtrlToken : public Token {
         RETURN
     };
 
-    CtrlToken(Type t, Loc l) : type(t), Token(l) {}
+    CtrlToken(Type t, Loc l);
 
-    std::string toString() const {
-        return CtrlTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
 };
-
-const std::vector<const char *> TerminalStrings{
-    "SEMICOL"};
 
 class TerminalToken : public Token {
    public:
@@ -183,25 +136,12 @@ class TerminalToken : public Token {
         SEMICOL
     };
 
-    TerminalToken(Type t, Loc l) : type(t), Token(l) {}
+    TerminalToken(Type t, Loc l);
 
-    std::string toString() const {
-        return TerminalStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
-};
-
-const std::vector<const char *> BlockTokenStrings{
-    "L_BRACE",
-    "R_BRACE",
-    "COMMA",
-    "COLON",
-    "L_PAREN",
-    "R_PAREN",
-    "L_BRACKET",
-    "R_BRACKET",
 };
 
 class BlockToken : public Token {
@@ -217,52 +157,13 @@ class BlockToken : public Token {
         R_BRACKET,
     };
 
-    BlockToken(Type t, Loc l) : type(t), Token(l) {}
+    BlockToken(Type t, Loc l);
 
-    std::string toString() const {
-        return BlockTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;
 };
-
-const std::vector<const char *> OpTokenStrings{
-    "QUESTION",
-    "LOGICAL_OR",
-    "LOGICAL_AND",
-    "BIT_OR",
-    "BIT_XOR",
-    "BIT_AND",
-    "EQ",
-    "NOT_EQ",
-    "LESS",
-    "GREATER",
-    "LESS_EQ",
-    "GREATER_EQ",
-    "LEFT_SH",
-    "RIGHT_SH",
-    "ADD",
-    "SUB",
-    "STAR",
-    "DIV",
-    "MOD",
-    "INC",
-    "DEC",
-    "DOT",
-    "ASSIGN",
-    "BIT_NOT",
-    "LOGICAL_NOT",
-    "MUL_ASSIGN",
-    "DIV_ASSIGN",
-    "MOD_ASSIGN",
-    "ADD_ASSIGN",
-    "SUB_ASSIGN",
-    "LSH_ASSIGN",
-    "RSH_ASSIGN",
-    "AND_ASSIGN",
-    "XOR_ASSIGN",
-    "OR_ASSIGN"};
 
 class OpToken : public Token {
    public:
@@ -304,11 +205,9 @@ class OpToken : public Token {
         OR_ASSIGN
     };
 
-    OpToken(Type t, Loc l) : type(t), Token(l) {}
+    OpToken(Type t, Loc l);
 
-    std::string toString() const {
-        return OpTokenStrings.at(type);
-    }
+    std::string toString() const;
 
    private:
     Type type;

@@ -3,7 +3,7 @@
 
 namespace ccc {
 
-Token::~Token() {}
+Token::Token(const Loc &l) : loc(l) {}
 
 std::string Token::toString() const {
     return "Token";

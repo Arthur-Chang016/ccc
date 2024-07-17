@@ -6,9 +6,13 @@
 #include <string_view>
 #include <vector>
 
-#include "Lex/Token.h"
+// #include "Lex/Token.h"
 
 namespace ccc {
+
+class Token;
+
+using TokenPtr = std::unique_ptr<Token>;
 
 /**
  * location information with line number and offset
@@ -26,6 +30,8 @@ class Loc {
     Loc newLined();
 
    public:
+    Loc(const Loc &l);
+
     std::string toString() const;
 };
 

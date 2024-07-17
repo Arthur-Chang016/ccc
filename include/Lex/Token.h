@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "Lex/Lexer.h"
+
 namespace ccc {
 
 class Token;
@@ -13,8 +15,12 @@ class Token;
 using TokenPtr = std::unique_ptr<Token>;
 
 class Token {
+    Loc loc;
+
    public:
-    virtual ~Token() = 0;
+    Token(const Loc &l);
+
+    virtual ~Token() = default;
     virtual std::string toString() const;
 };
 
@@ -22,7 +28,7 @@ class IDToken : public Token {
     std::string name;
 
    public:
-    IDToken(std::string str) : name(std::move(str)) {}
+    IDToken(std::string str, Loc l) : name(std::move(str)), Token(l) {}
 
     std::string toString() const {
         return "ID : " + name;
@@ -36,7 +42,7 @@ class IntLitToken : public Token {
     int64_t value;
 
    public:
-    IntLitToken(int64_t num) : value(num) {}
+    IntLitToken(int64_t num, Loc l) : value(num), Token(l) {}
 
     std::string toString() const {
         return "INTLIT : " + std::to_string(value);
@@ -47,7 +53,7 @@ class StrLitToken : public Token {
     std::string content;
 
    public:
-    StrLitToken(std::string str) : content(std::move(str)) {}
+    StrLitToken(std::string str, Loc l) : content(std::move(str)), Token(l) {}
 
     std::string toString() const {
         return "STRLIT : " + content;
@@ -73,7 +79,7 @@ class TypeToken : public Token {
         LONG
     };
 
-    TypeToken(Type t) : type(t) {}
+    TypeToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return TypeTokenStrings.at(type);
@@ -92,7 +98,7 @@ class SizeofToken : public Token {
         SIZEOF
     };
 
-    SizeofToken(Type t) : type(t) {}
+    SizeofToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return SizeofTokenStrings.at(type);
@@ -117,7 +123,7 @@ class AggregateToken : public Token {
         IMPORT
     };
 
-    AggregateToken(Type t) : type(t) {}
+    AggregateToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return AggregateTokenStrings.at(type);
@@ -158,7 +164,7 @@ class CtrlToken : public Token {
         RETURN
     };
 
-    CtrlToken(Type t) : type(t) {}
+    CtrlToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return CtrlTokenStrings.at(type);
@@ -177,7 +183,7 @@ class TerminalToken : public Token {
         SEMICOL
     };
 
-    TerminalToken(Type t) : type(t) {}
+    TerminalToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return TerminalStrings.at(type);
@@ -211,7 +217,7 @@ class BlockToken : public Token {
         R_BRACKET,
     };
 
-    BlockToken(Type t) : type(t) {}
+    BlockToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return BlockTokenStrings.at(type);
@@ -298,7 +304,7 @@ class OpToken : public Token {
         OR_ASSIGN
     };
 
-    OpToken(Type t) : type(t) {}
+    OpToken(Type t, Loc l) : type(t), Token(l) {}
 
     std::string toString() const {
         return OpTokenStrings.at(type);

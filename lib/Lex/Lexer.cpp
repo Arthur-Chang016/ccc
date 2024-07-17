@@ -13,6 +13,8 @@ namespace ccc {
 
 Loc::Loc(int l, int o) : line(l), offset(o) {}
 
+Loc::Loc(const Loc &l) : line(l.line), offset(l.offset) {}
+
 Loc Loc::incremented() {
     return Loc(line, offset + 1);
 }
@@ -251,139 +253,139 @@ bool Lexer::startsWithSign() {
 
 Lexer Lexer::consumeSign(TokenPtr &retToken) {
     if (this->starts_with("{")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACKET);
+        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACKET, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("}")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACKET);
+        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACKET, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with(";")) {
-        retToken = std::make_unique<TerminalToken>(TerminalToken::SEMICOL);
+        retToken = std::make_unique<TerminalToken>(TerminalToken::SEMICOL, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with(",")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::COMMA);
+        retToken = std::make_unique<BlockToken>(BlockToken::COMMA, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with(":")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::COLON);
+        retToken = std::make_unique<BlockToken>(BlockToken::COLON, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("*")) {
-        retToken = std::make_unique<OpToken>(OpToken::STAR);
+        retToken = std::make_unique<OpToken>(OpToken::STAR, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("(")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::L_PAREN);
+        retToken = std::make_unique<BlockToken>(BlockToken::L_PAREN, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with(")")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::R_PAREN);
+        retToken = std::make_unique<BlockToken>(BlockToken::R_PAREN, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("[")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACE);
+        retToken = std::make_unique<BlockToken>(BlockToken::L_BRACE, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("]")) {
-        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACE);
+        retToken = std::make_unique<BlockToken>(BlockToken::R_BRACE, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("?")) {
-        retToken = std::make_unique<OpToken>(OpToken::QUESTION);
+        retToken = std::make_unique<OpToken>(OpToken::QUESTION, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("*=")) {
-        retToken = std::make_unique<OpToken>(OpToken::MUL_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::MUL_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("/=")) {
-        retToken = std::make_unique<OpToken>(OpToken::DIV_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::DIV_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("%=")) {
-        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("+=")) {
-        retToken = std::make_unique<OpToken>(OpToken::ADD_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::ADD_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("-=")) {
-        retToken = std::make_unique<OpToken>(OpToken::SUB_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::SUB_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("<<=")) {
-        retToken = std::make_unique<OpToken>(OpToken::LSH_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::LSH_ASSIGN, this->getLoc());
         return this->consume(3);
     } else if (this->starts_with(">>=")) {
-        retToken = std::make_unique<OpToken>(OpToken::RSH_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::RSH_ASSIGN, this->getLoc());
         return this->consume(3);
     } else if (this->starts_with("&=")) {
-        retToken = std::make_unique<OpToken>(OpToken::AND_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::AND_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("^=")) {
-        retToken = std::make_unique<OpToken>(OpToken::XOR_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::XOR_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("|=")) {
-        retToken = std::make_unique<OpToken>(OpToken::OR_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::OR_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("||")) {
-        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_OR);
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_OR, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("&&")) {
-        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_AND);
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_AND, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("|")) {
-        retToken = std::make_unique<OpToken>(OpToken::BIT_OR);
+        retToken = std::make_unique<OpToken>(OpToken::BIT_OR, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("^")) {
-        retToken = std::make_unique<OpToken>(OpToken::BIT_XOR);
+        retToken = std::make_unique<OpToken>(OpToken::BIT_XOR, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("&")) {
-        retToken = std::make_unique<OpToken>(OpToken::BIT_AND);
+        retToken = std::make_unique<OpToken>(OpToken::BIT_AND, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("==")) {
-        retToken = std::make_unique<OpToken>(OpToken::EQ);
+        retToken = std::make_unique<OpToken>(OpToken::EQ, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("!=")) {
-        retToken = std::make_unique<OpToken>(OpToken::NOT_EQ);
+        retToken = std::make_unique<OpToken>(OpToken::NOT_EQ, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("<=")) {
-        retToken = std::make_unique<OpToken>(OpToken::LESS_EQ);
+        retToken = std::make_unique<OpToken>(OpToken::LESS_EQ, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with(">=")) {
-        retToken = std::make_unique<OpToken>(OpToken::GREATER_EQ);
+        retToken = std::make_unique<OpToken>(OpToken::GREATER_EQ, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("<<")) {
-        retToken = std::make_unique<OpToken>(OpToken::LEFT_SH);
+        retToken = std::make_unique<OpToken>(OpToken::LEFT_SH, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with(">>")) {
-        retToken = std::make_unique<OpToken>(OpToken::RIGHT_SH);
+        retToken = std::make_unique<OpToken>(OpToken::RIGHT_SH, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("++")) {
-        retToken = std::make_unique<OpToken>(OpToken::INC);
+        retToken = std::make_unique<OpToken>(OpToken::INC, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("--")) {
-        retToken = std::make_unique<OpToken>(OpToken::DEC);
+        retToken = std::make_unique<OpToken>(OpToken::DEC, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with(".")) {
-        retToken = std::make_unique<OpToken>(OpToken::DOT);
+        retToken = std::make_unique<OpToken>(OpToken::DOT, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("->")) {
-        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::MOD_ASSIGN, this->getLoc());
         return this->consume(2);
     } else if (this->starts_with("<")) {
-        retToken = std::make_unique<OpToken>(OpToken::LESS);
+        retToken = std::make_unique<OpToken>(OpToken::LESS, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with(">")) {
-        retToken = std::make_unique<OpToken>(OpToken::GREATER);
+        retToken = std::make_unique<OpToken>(OpToken::GREATER, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("+")) {
-        retToken = std::make_unique<OpToken>(OpToken::ADD);
+        retToken = std::make_unique<OpToken>(OpToken::ADD, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("-")) {
-        retToken = std::make_unique<OpToken>(OpToken::SUB);
+        retToken = std::make_unique<OpToken>(OpToken::SUB, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("/")) {
-        retToken = std::make_unique<OpToken>(OpToken::DIV);
+        retToken = std::make_unique<OpToken>(OpToken::DIV, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("%")) {
-        retToken = std::make_unique<OpToken>(OpToken::MOD);
+        retToken = std::make_unique<OpToken>(OpToken::MOD, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("=")) {
-        retToken = std::make_unique<OpToken>(OpToken::ASSIGN);
+        retToken = std::make_unique<OpToken>(OpToken::ASSIGN, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("~")) {
-        retToken = std::make_unique<OpToken>(OpToken::BIT_NOT);
+        retToken = std::make_unique<OpToken>(OpToken::BIT_NOT, this->getLoc());
         return this->consume(1);
     } else if (this->starts_with("!")) {
-        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_NOT);
+        retToken = std::make_unique<OpToken>(OpToken::LOGICAL_NOT, this->getLoc());
         return this->consume(1);
     }
     assert(false && "Shouldn't achieve here. Expect a sign");
@@ -395,58 +397,58 @@ bool canBeSymbol(const char c) {
     return std::isalpha(c) || c == '_' || std::isdigit(c);
 }
 
-TokenPtr symbolToToken(const std::string &symbol) {
+TokenPtr symbolToToken(const std::string &symbol, Loc loc) {
     if (symbol == ("void")) {
-        return std::make_unique<TypeToken>(TypeToken::VOID);
+        return std::make_unique<TypeToken>(TypeToken::VOID, loc);
     } else if (symbol == ("char")) {
-        return std::make_unique<TypeToken>(TypeToken::CHAR);
+        return std::make_unique<TypeToken>(TypeToken::CHAR, loc);
     } else if (symbol == ("short")) {
-        return std::make_unique<TypeToken>(TypeToken::SHORT);
+        return std::make_unique<TypeToken>(TypeToken::SHORT, loc);
     } else if (symbol == ("int")) {
-        return std::make_unique<TypeToken>(TypeToken::INT);
+        return std::make_unique<TypeToken>(TypeToken::INT, loc);
     } else if (symbol == ("long")) {
-        return std::make_unique<TypeToken>(TypeToken::LONG);
+        return std::make_unique<TypeToken>(TypeToken::LONG, loc);
     } else if (symbol == ("struct")) {
-        return std::make_unique<AggregateToken>(AggregateToken::STRUCT);
+        return std::make_unique<AggregateToken>(AggregateToken::STRUCT, loc);
     } else if (symbol == ("union")) {
-        return std::make_unique<AggregateToken>(AggregateToken::UNION);
+        return std::make_unique<AggregateToken>(AggregateToken::UNION, loc);
     } else if (symbol == ("enum")) {
-        return std::make_unique<AggregateToken>(AggregateToken::ENUM);
+        return std::make_unique<AggregateToken>(AggregateToken::ENUM, loc);
     } else if (symbol == ("sizeof")) {
-        return std::make_unique<SizeofToken>(SizeofToken::SIZEOF);
+        return std::make_unique<SizeofToken>(SizeofToken::SIZEOF, loc);
     } else if (symbol == ("case")) {
-        return std::make_unique<CtrlToken>(CtrlToken::CASE);
+        return std::make_unique<CtrlToken>(CtrlToken::CASE, loc);
     } else if (symbol == ("default")) {
-        return std::make_unique<CtrlToken>(CtrlToken::DEFAULT);
+        return std::make_unique<CtrlToken>(CtrlToken::DEFAULT, loc);
     } else if (symbol == ("if")) {
-        return std::make_unique<CtrlToken>(CtrlToken::IF);
+        return std::make_unique<CtrlToken>(CtrlToken::IF, loc);
     } else if (symbol == ("else")) {
-        return std::make_unique<CtrlToken>(CtrlToken::ELSE);
+        return std::make_unique<CtrlToken>(CtrlToken::ELSE, loc);
     } else if (symbol == ("switch")) {
-        return std::make_unique<CtrlToken>(CtrlToken::SWITCH);
+        return std::make_unique<CtrlToken>(CtrlToken::SWITCH, loc);
     } else if (symbol == ("while")) {
-        return std::make_unique<CtrlToken>(CtrlToken::WHILE);
+        return std::make_unique<CtrlToken>(CtrlToken::WHILE, loc);
     } else if (symbol == ("do")) {
-        return std::make_unique<CtrlToken>(CtrlToken::DO);
+        return std::make_unique<CtrlToken>(CtrlToken::DO, loc);
     } else if (symbol == ("for")) {
-        return std::make_unique<CtrlToken>(CtrlToken::FOR);
+        return std::make_unique<CtrlToken>(CtrlToken::FOR, loc);
     } else if (symbol == ("goto")) {
-        return std::make_unique<CtrlToken>(CtrlToken::GOTO);
+        return std::make_unique<CtrlToken>(CtrlToken::GOTO, loc);
     } else if (symbol == ("continue")) {
-        return std::make_unique<CtrlToken>(CtrlToken::CONTINUE);
+        return std::make_unique<CtrlToken>(CtrlToken::CONTINUE, loc);
     } else if (symbol == ("break")) {
-        return std::make_unique<CtrlToken>(CtrlToken::BREAK);
+        return std::make_unique<CtrlToken>(CtrlToken::BREAK, loc);
     } else if (symbol == ("return")) {
-        return std::make_unique<CtrlToken>(CtrlToken::RETURN);
+        return std::make_unique<CtrlToken>(CtrlToken::RETURN, loc);
     }
     // added myself
     else if (symbol == ("import")) {
-        return std::make_unique<AggregateToken>(AggregateToken::IMPORT);
+        return std::make_unique<AggregateToken>(AggregateToken::IMPORT, loc);
     } else if (symbol == ("bool")) {
-        return std::make_unique<TypeToken>(TypeToken::BOOL);
+        return std::make_unique<TypeToken>(TypeToken::BOOL, loc);
     }
     // ID token
-    return std::make_unique<IDToken>(symbol);
+    return std::make_unique<IDToken>(symbol, loc);
 }
 
 Lexer Lexer::consumeSymbol(std::string &symbol) {
@@ -476,15 +478,15 @@ Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
     } else if (this->starts_with('\"')) {  // string literal
         std::string strLit;
         retLex = this->consumeStrLit(strLit).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<StrLitToken>(strLit));
+        retTokens.emplace_back(std::make_unique<StrLitToken>(strLit, this->getLoc()));
     } else if (this->starts_with('\'')) {  // char literal
         int64_t charLit = 0;
         retLex = this->consumeCharLit(charLit).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<IntLitToken>(charLit));
+        retTokens.emplace_back(std::make_unique<IntLitToken>(charLit, this->getLoc()));
     } else if (std::isdigit(this->at(0))) {  // int literal
         int64_t intLit = 0;
         retLex = (this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit)).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<IntLitToken>(intLit));
+        retTokens.emplace_back(std::make_unique<IntLitToken>(intLit, this->getLoc()));
     } else if (this->startsWithSign()) {
         TokenPtr token = nullptr;
         retLex = this->consumeSign(token).buildTokenStream(retTokens);
@@ -492,7 +494,7 @@ Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
     } else if (this->startWithSymbolHead()) {  // symbol
         std::string symbol;
         retLex = this->consumeSymbol(symbol).buildTokenStream(retTokens);
-        retTokens.emplace_back(symbolToToken(symbol));
+        retTokens.emplace_back(symbolToToken(symbol, this->getLoc()));
     } else if (std::isspace(this->at(0))) {
         retLex = this->consume(1).buildTokenStream(retTokens);
     } else {

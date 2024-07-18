@@ -40,10 +40,10 @@ class Lexer : public std::string_view {
     Lexer(std::string_view s);
 
     /**
-     * Build the lexer stream
-     * Assume the start point of the input can form a new token
+     * Consume 1 token each time calling this function
+     * Need to check if retToken is nullptr. If it's, it's EOF
      */
-    Lexer buildTokenStream(std::vector<TokenPtr> &retTokens);
+    Lexer consumeSingleToken(TokenPtr &retToken);
 
     /**
      * Halt the program and print error message along with loc info

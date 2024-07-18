@@ -41,9 +41,14 @@ void printStackTrace() {
 std::vector<TokenPtr> buildTokens(std::string_view input) {
     Lexer lexer(input);
     std::vector<TokenPtr> tokens;
-    lexer = lexer.buildTokenStream(tokens);
+    // keep consuming tokne until lexer is empty
+    while (lexer.empty() == false) {
+        TokenPtr token = nullptr;
+        lexer = lexer.consumeSingleToken(token);
+        if (token != nullptr)
+            tokens.emplace_back(std::move(token));
+    }
     assert(lexer.empty() && "Lexer should be empty after lexing");
-    std::reverse(tokens.begin(), tokens.end());
     return tokens;
 }
 

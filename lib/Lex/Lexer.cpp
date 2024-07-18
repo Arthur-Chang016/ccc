@@ -467,36 +467,34 @@ bool Lexer::startWithHexLit() {
     return this->starts_with("0x") || this->starts_with("0X");
 }
 
-Lexer Lexer::buildTokenStream(std::vector<TokenPtr> &retTokens) {
+Lexer Lexer::consumeSingleToken(TokenPtr &retToken) {
     if (this->empty()) return *this;
     Lexer retLex = *this;
 
     if (this->starts_with("/*")) {  // long comment
-        retLex = this->consumeLongComment().buildTokenStream(retTokens);
+        retLex = this->consumeLongComment().consumeSingleToken(retToken = nullptr);
     } else if (this->starts_with("//")) {  // short comment
-        retLex = this->consumeShortComment().buildTokenStream(retTokens);
+        retLex = this->consumeShortComment().consumeSingleToken(retToken = nullptr);
     } else if (this->starts_with('\"')) {  // string literal
         std::string strLit;
-        retLex = this->consumeStrLit(strLit).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<StrLitToken>(strLit, this->getLoc()));
+        retLex = this->consumeStrLit(strLit);
+        retToken = std::make_unique<StrLitToken>(strLit, this->getLoc());
     } else if (this->starts_with('\'')) {  // char literal
         int64_t charLit = 0;
-        retLex = this->consumeCharLit(charLit).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<IntLitToken>(charLit, this->getLoc()));
+        retLex = this->consumeCharLit(charLit);
+        retToken = std::make_unique<IntLitToken>(charLit, this->getLoc());
     } else if (std::isdigit(this->at(0))) {  // int literal
         int64_t intLit = 0;
-        retLex = (this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit)).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::make_unique<IntLitToken>(intLit, this->getLoc()));
+        retLex = this->startWithHexLit() ? this->consumeHexLit(intLit) : this->consumeDeciLit(intLit);
+        retToken = std::make_unique<IntLitToken>(intLit, this->getLoc());
     } else if (this->startsWithSign()) {
-        TokenPtr token = nullptr;
-        retLex = this->consumeSign(token).buildTokenStream(retTokens);
-        retTokens.emplace_back(std::move(token));
+        retLex = this->consumeSign(retToken);
     } else if (this->startWithSymbolHead()) {  // symbol
         std::string symbol;
-        retLex = this->consumeSymbol(symbol).buildTokenStream(retTokens);
-        retTokens.emplace_back(symbolToToken(symbol, this->getLoc()));
+        retLex = this->consumeSymbol(symbol);
+        retToken = symbolToToken(symbol, this->getLoc());
     } else if (std::isspace(this->at(0))) {
-        retLex = this->consume(1).buildTokenStream(retTokens);
+        retLex = this->consume(1).consumeSingleToken(retToken);
     } else {
         this->lexError("Unsupported input");
     }

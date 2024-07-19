@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <print>
+#include <map>
 
 #include "Lex/Lexer.h"
 #include "Lex/Token.h"
@@ -15,11 +17,12 @@ int main(int args, char **argv) {
     for (auto &token : tokens) {
         std::cout << token->toString() << std::endl;
     }
-
-    // ccc::Lexer lexer(inputText);
-
+    
+    
     int a = 0;
-
-    std::cout << "Hello CCC!" << std::endl;
+    
+    
+    std::map<int, std::map<std::string, int>> m{{1, {{"s", 2}}}, {2, {{"t", 3}}}};
+    std::println("Hello CCC! {}", m);
     return 0;
 }

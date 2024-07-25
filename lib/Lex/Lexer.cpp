@@ -31,7 +31,11 @@ Lexer::Lexer(std::string_view s) : super(s), loc(1, 1) {}
 
 Lexer::Lexer(Loc l, std::string_view sv) : loc(l), super(sv) {}
 
-Loc Lexer::getLoc() {
+Lexer::Lexer(const Lexer &l): super(l), loc(l.getLoc()) {}
+
+// Lexer::Lexer() {}
+
+Loc Lexer::getLoc() const {
     return this->loc;
 }
 

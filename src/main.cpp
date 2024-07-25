@@ -5,6 +5,7 @@
 
 #include "Lex/Lexer.h"
 #include "Lex/Token.h"
+#include "Lex/TokenStream.h"
 #include "Parse/Parser.h"
 #include "Utils/Utils.h"
 
@@ -16,13 +17,13 @@ int main(int args, char **argv) {
     std::vector<ccc::TokenPtr> tokens = ccc::buildTokens(inputText);
 
     for (auto &token : tokens) {
-        std::println("{}", token->toString());
+        std::print("{}\n", token->toString());
     }
     
     
     int a = 0;
     
     std::map<int, std::map<std::string, int>> m{{1, {{"s", 2}}}, {2, {{"t", 3}}}};
-    std::println("\nHello CCC! {}", m);
+    std::print("\nHello CCC! {}\n", 123);
     return 0;
 }

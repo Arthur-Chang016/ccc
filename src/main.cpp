@@ -5,6 +5,7 @@
 
 #include "Lex/Lexer.h"
 #include "Lex/Token.h"
+#include "Parse/Parser.h"
 #include "Utils/Utils.h"
 
 int main(int args, char **argv) {

@@ -2,6 +2,8 @@
 #ifndef LEX_TOKENSTREAM_H
 #define LEX_TOKENSTREAM_H
 
+#include "Lex/Lexer.h"
+
 namespace ccc {
 
 class TokenStream {

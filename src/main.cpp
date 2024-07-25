@@ -23,7 +23,6 @@ int main(int args, char **argv) {
     
     int a = 0;
     
-    std::map<int, std::map<std::string, int>> m{{1, {{"s", 2}}}, {2, {{"t", 3}}}};
-    std::print("\nHello CCC! {}\n", 123);
+    std::print("\nHello CCC!\n");
     return 0;
 }

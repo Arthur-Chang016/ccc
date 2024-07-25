@@ -3,6 +3,8 @@
 
 namespace ccc {
     
+void del() {
     
+}
 
 }  // namespace ccc

@@ -15,14 +15,13 @@ int main(int args, char **argv) {
     std::vector<ccc::TokenPtr> tokens = ccc::buildTokens(inputText);
 
     for (auto &token : tokens) {
-        std::cout << token->toString() << std::endl;
+        std::println("{}", token->toString());
     }
     
     
     int a = 0;
     
-    
     std::map<int, std::map<std::string, int>> m{{1, {{"s", 2}}}, {2, {{"t", 3}}}};
-    std::println("Hello CCC! {}", m);
+    std::println("\nHello CCC! {}", m);
     return 0;
 }

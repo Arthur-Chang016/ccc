@@ -3,6 +3,7 @@
 #define LEX_TOKENSTREAM_H
 
 #include "Lex/Lexer.h"
+#include "Lex/Token.h"
 
 namespace ccc {
 
@@ -12,22 +13,31 @@ class TokenStream {
     std::vector<TokenPtr> container;
 
    public:
-    // TokenStream(const Lexer &l);
+    TokenStream(const Lexer &l);
     
-//     /**
-//      * Instead of using pointer,
-//      * using index to prevent iterator invalidation
-//      */
-//     class iterator {
-//         size_t index;
-//     };
-//     class sentinel {};
+    class sentinel {};
+    /**
+     * Instead of using pointer,
+     * using index to prevent iterator invalidation
+     */
+    class iterator {
+        size_t index;
+        std::vector<TokenPtr> &container;
+        
+        public:
+        iterator(size_t ind, std::vector<TokenPtr> &c);
+        
+        TokenPtr &operator*();
+        TokenPtr *operator->();
+        
+        bool operator==(sentinel sent);
+        bool operator==(iterator other);
+    };
+    
+    iterator begin();
+    sentinel end();
 
-//     iterator begin();
-//     sentinel end();
-
-//     bool operator==(sentinel sent);
-//     bool operator==(iterator other);
+    
 };
 
 }  // namespace ccc

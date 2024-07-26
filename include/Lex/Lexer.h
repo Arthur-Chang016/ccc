@@ -38,10 +38,6 @@ class Lexer : public std::string_view {
 
    public:
     Lexer(std::string_view s);
-    
-    Lexer(const Lexer &l);
-    
-    Lexer();
 
     /**
      * Consume 1 token each time calling this function

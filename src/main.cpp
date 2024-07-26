@@ -1,7 +1,7 @@
 #include <iostream>
-#include <string>
-#include <print>
 #include <map>
+#include <print>
+#include <string>
 
 #include "Lex/Lexer.h"
 #include "Lex/Token.h"
@@ -14,15 +14,14 @@ int main(int args, char **argv) {
 
     std::string inputText = ccc::inputFileToString(argv[1]);
 
-    std::vector<ccc::TokenPtr> tokens = ccc::buildTokens(inputText);
+    ccc::TokenStream ts(inputText);
 
-    for (auto &token : tokens) {
+    for (auto &token : ts) {
         std::print("{}\n", token->toString());
     }
-    
-    
+
     int a = 0;
-    
+
     std::print("\nHello CCC!\n");
     return 0;
 }

@@ -65,6 +65,7 @@
         "format": "cpp",
         "__tree": "cpp",
         "map": "cpp",
+        "iterator": "cpp"
     },
     "cmake.configureSettings": {
         // "CMAKE_EXE_LINKER_FLAGS": "-L/opt/homebrew/opt/llvm/lib/c++ -Wl,-rpath,/opt/homebrew/opt/llvm/lib/c++"

@@ -2,6 +2,8 @@
 #ifndef LEX_TOKENSTREAM_H
 #define LEX_TOKENSTREAM_H
 
+#include <string_view>
+
 #include "Lex/Lexer.h"
 #include "Lex/Token.h"
 
@@ -13,8 +15,8 @@ class TokenStream {
     std::vector<TokenPtr> container;
 
    public:
-    TokenStream(const Lexer &l);
-    
+    TokenStream(std::string_view inputText);
+
     class sentinel {};
     /**
      * Instead of using pointer,
@@ -22,22 +24,29 @@ class TokenStream {
      */
     class iterator {
         size_t index;
-        std::vector<TokenPtr> &container;
-        
-        public:
-        iterator(size_t ind, std::vector<TokenPtr> &c);
-        
+        TokenStream &tokenStream;
+
+       public:
+        iterator(size_t ind, TokenStream &t);
+
         TokenPtr &operator*();
         TokenPtr *operator->();
-        
+
         bool operator==(sentinel sent);
         bool operator==(iterator other);
+
+        // Pre-increment
+        iterator &operator++();
+        // Post-increment
+        iterator operator++(int);
     };
-    
+
     iterator begin();
     sentinel end();
 
-    
+    // Keep consuming token from lexer until 'size'.
+    // if size exceeds the bound, it will stop
+    void incSizeTil(int size);
 };
 
 }  // namespace ccc
